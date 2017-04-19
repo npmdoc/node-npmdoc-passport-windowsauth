@@ -56,6 +56,15 @@
 
         <li>
 
+            <a class="apidocElementLiA" href="#apidoc.element.passport-windowsauth.passport-windowsauth">
+            function <span class="apidocSignatureSpan"></span>passport-windowsauth
+            <span class="apidocSignatureSpan">(options, verify)</span>
+            </a>
+
+        </li>
+
+        <li>
+
             <a class="apidocElementLiA" href="#apidoc.element.passport-windowsauth.LdapLookup">
             function <span class="apidocSignatureSpan">passport-windowsauth.</span>LdapLookup
             <span class="apidocSignatureSpan">(options)</span>
@@ -183,6 +192,58 @@
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.passport-windowsauth" id="apidoc.module.passport-windowsauth">module passport-windowsauth</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.passport-windowsauth.passport-windowsauth" id="apidoc.element.passport-windowsauth.passport-windowsauth">
+        function <span class="apidocSignatureSpan"></span>passport-windowsauth
+        <span class="apidocSignatureSpan">(options, verify)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function Strategy(options, verify) {
+  if (typeof options == 'function') {
+    verify = options;
+    options = {};
+  }
+  if (!verify) throw new Error('windows authentication strategy requires a verify function');
+
+  if(!options.integrated &amp;&amp; (!options.ldap || (!options.ldap.url &amp;&amp; !options.ldap.binder))) {
+    throw new Error('ldap url should be provided in order to validate user and passwords');
+  }
+
+  passport.Strategy.call(this);
+
+  this.name = 'WindowsAuthentication';
+  this._verify = verify;
+
+  this._passReqToCallback = options.passReqToCallback;
+
+  this._integrated = typeof options.integrated !== 'undefined' ?
+                          options.integrated :
+                          true;
+
+  if (!this._integrated) {
+    this._usernameField = options.usernameField || 'username';
+    this._passwordField = options.passwordField || 'password';
+  }
+
+  this._getUserNameFromHeader = options.getUserNameFromHeader || function (req) {
+    if (!req.headers['x-iisnode-logon_user']) return null;
+    return req.headers['x-iisnode-logon_user'].split('\\')[1];
+  };
+
+  if (options.ldap) {
+    if (this._integrated) {
+      this._ldapLookup = new LdapLookup(options.ldap);
+    } else {
+      this._ldapValidator = new LdapValidator(options.ldap);
+    }
+  }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 
     <h2>
